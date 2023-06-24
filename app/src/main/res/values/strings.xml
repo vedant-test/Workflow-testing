@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">QuizApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="seconds">%02d:%02d minutes</string>
+    <string name="timer_title">Time Left</string>
+    <string name="next_button_text">next</string>
+    <string name="previous_button_text">previous</string>
+    <string name="test_submitted">Test submitted</string>
+    <string name="restart">Restart</string>
+    <string name="exit">exit</string>
+    <string name="welcome">WELCOME</string>
+    <string name="start">start test</string>
+</resources>
