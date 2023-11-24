@@ -5,4 +5,7 @@
 *       @NNKK24 @hitesh-temp-account
 
 # Signal-collection module that collects local and remote signals
-/signal-collection/ @NNKK24 @hitesh-temp-account
+/signal-collection/ @NNKK24
+
+# Group-matching module that collects local and remote signals
+/group-matching/ @hitesh-temp-account
