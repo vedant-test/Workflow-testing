@@ -18,7 +18,6 @@ jobs:
   require-reviewers:
     # Optional: skip check if no relevant label is present
     # This needs to be kept in sync with the labels being checked
-    if: ${{ contains(github.event.pull_request.labels.*.name, '*') || contains(github.event.pull_request.labels.*.name, 'migration') }}
     runs-on: ubuntu-latest
     steps:
       - name: Require-reviewers
@@ -27,5 +26,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           rules_yaml: | # define which PR labels require how many aprroving reviewers
-            *: reviewers: ${{ vars.REVIEWERS }}
+            '*': reviewers: ${{ vars.REVIEWERS }}
     
