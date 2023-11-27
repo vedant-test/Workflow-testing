@@ -26,5 +26,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           rules_yaml: | # define which PR labels require how many aprroving reviewers
-            Update: 5
+            Update: ${{ vars.REVIEWERS }}
   
