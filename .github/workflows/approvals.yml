@@ -16,7 +16,6 @@ on:
       - dismissed
 jobs:
   require-reviewers:
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'Update') }}
     runs-on: ubuntu-latest
     steps:
       - name: Require-reviewers
