@@ -1,6 +1,8 @@
 # This workflow will set a number or reviewers depending on the labels
 name: Label Reviews
 # Trigger the workflow on pull requests
+# PAT  : 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
+#             Update: ${{ vars.REVIEWERS }}
 on:
   pull_request:
     types:
@@ -24,5 +26,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           rules_yaml: | # define which PR labels require how many aprroving reviewers
-            '*': ${{ vars.REVIEWERS }}
+            requested_reviewers: ${{ toJson(github.event.pull_request.requested_reviewers) }}
+            run: |
+            echo "$requested_reviewers"
+            LL=$(echo $requested_reviewers | jq '. | length' )
+            echo "::set-output name=reviewer_length::$LL"
+            Update: steps.getlegth.outputs.reviewer_length
+          
   
