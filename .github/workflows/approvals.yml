@@ -27,5 +27,5 @@ jobs:
         with:
           rules_yaml: | # define which PR labels require how many aprroving reviewers
             Update: ${{ github.event.pull_request.requested_reviewers }}
-            echo "${{ github.event.pull_request.requested_reviewers }}"
+            echo "${{ github.event.pull_request.requested_reviewers.size }}"
   
