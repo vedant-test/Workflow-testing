@@ -27,6 +27,7 @@ public class SplashScreen extends Fragment {
 
     // TODO: Rename and change types and number of parameters
     public static SplashScreen newInstance() {
+        Log.d("######", "Splashscreen#newInstance, 1")
         SplashScreen fragment = new SplashScreen();
         return fragment;
     }
@@ -34,6 +35,7 @@ public class SplashScreen extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        Log.d("######", "Splashscreen#onAttach, 2")
         activity = (MainActivity) getActivity();
     }
 
@@ -48,6 +50,7 @@ public class SplashScreen extends Fragment {
             public void run() {
 //                showing setup screen
                 SetupScreen setupScreen = new SetupScreen();
+                Log.d("######", "Splashscreen#run, 3")
 //                activity.getSupportFragmentManager().popBackStack();
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_activity, setupScreen).commit();
             }
