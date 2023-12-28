@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.quizapp.Fragments.SplashScreen;
 
+// Some changes
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
