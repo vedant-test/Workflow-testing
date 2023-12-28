@@ -3,7 +3,7 @@
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
 
-* @vedant-test/platform
+* @vedant-test/infra
 
 # Signal-collection module that collects local and remote signals
 /signal-collection/ @vedant-test/infra
