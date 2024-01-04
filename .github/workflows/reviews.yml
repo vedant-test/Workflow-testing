@@ -22,11 +22,13 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const token = process.env.GITHUB_TOKEN;
             const response = await github.rest.pulls.addReviewers({
               pull_id: context.payload.pull_id,
-              team_reviewers: @vedant-test/newplatformteam,
+              team_reviewers: ['@vedant-test/newplatformteam'],
               token
             });
+            console.log(`response: `,response);
   
   require-reviewers:
     runs-on: ubuntu-latest
