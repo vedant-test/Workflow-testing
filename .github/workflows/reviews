@@ -1,0 +1,106 @@
+name: Reviews
+on:
+  pull_request_review:
+    types:
+      - submitted
+      - edited
+      - dismissed
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
+jobs:
+  require-reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Execute script
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            // get the list of paths of changed files
+            const { execSync } = require('child_process');
+            const { commits } = context.payload.pull_request;
+            const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
+            const changed_files = file_names.split('\n').filter(Boolean);
+            console.log(`changed_files: `,changed_files);
+            
+            // extract the module name from the list
+            const module_names = new Set();
+            for (const file of changed_files) {
+              const module_names_words = file.split('/');
+              module_names.add(module_names_words[0]);
+            }
+            console.log(`module_names: `,module_names);
+            
+            // get the list of reviewers from the text file
+            const fs = require('fs');
+            const lines = fs.readFileSync('owners', 'utf-8').split('\n');
+            console.log(`individual lines: `,lines);
+
+            const required_approvers = new Set();
+            lines.forEach(line => {
+              // split the line into individual words
+              const words = line.trim().split(' ');
+              console.log(`words: `,words);
+
+              // split path (first word) into individual words
+              const path_words = words[0].split('/').filter(str => str !== '');
+              console.log(`path_words: `,path_words);
+
+              // iterate through the module names set that we extracted from the list of changed files.
+              // check if it contains the current module name (path_words[1])
+              for (const module_name of module_names) {
+                if (module_name === path_words[1]) {
+                  for (let i = 1; i < words.length; i++) {
+                    required_approvers.add(words[i]);
+                  }
+                }
+                console.log(`---> module_name: `,module_name);
+                console.log(`path_words[1]: `,path_words[1]);
+                console.log(`required_approvers: `,required_approvers);
+              }
+            })
+            console.log(`final required_approvers: `,required_approvers);
+
+            // get the list of reviews on the PR
+            const token = core.getInput('token');
+            const reviews = await github.rest.pulls.listReviews({
+                          ...context.repo,
+                          pull_number: context.payload.pull_request.number
+                      });
+            console.log(`list of reviews: `,reviews);
+
+            // check if we got all the reviews
+            let final_check = true
+            for (const required_approver of required_approvers) {
+              for (const review of reviews.data) {
+                if (review.state === `APPROVED` && review.user && required_approver === '@' + review.user.login) {
+                  console.log(`===> review approved for user: `,review.user.login)
+                } else {
+                  console.log(`---> review.state: `,review.state)
+                  console.log(`review.user.login: `,review.user.login)
+                  console.log(`required_approver: `,required_approver);
+                  final_check = false;
+                }
+              }
+            }
+
+            // final result
+            console.log(`final result: `,final_check);
+
+            if (!final_check) {
+              console.log(`Fail the job`);
+              core.setFailed('Fail the job');
+            }
+
+            console.log(`Hello`);
+            return "Hello!";
