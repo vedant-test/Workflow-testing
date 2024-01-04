@@ -3,11 +3,10 @@
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
 
-* @vedant-test/infra
+* @infra
 
 # Signal-collection module that collects local and remote signals
-/signal-collection/ @vedant-test/infra
+/signal-collection/ @infra @platform2
 
 # Group-matching module that collects local and remote signals
-# /group-matching/ @hitesh-temp-account @NCK22 
-/group-matching/ @vedant-test/infra @vedant-test/platform 
+/group-matching/ @infra @platform
