@@ -43,7 +43,7 @@ jobs:
             
             // get the list of reviewers from the text file
             const fs = require('fs');
-            const lines = fs.readFileSync('owners', 'utf-8').split('\n');
+            const lines = fs.readFileSync('CODEOWNERS', 'utf-8').split('\n');
             console.log(`individual lines: `,lines);
 
             const required_approvers = new Set();
