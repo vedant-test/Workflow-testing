@@ -6,7 +6,7 @@
 * @vedant-test/infra
 
 # Signal-collection module that collects local and remote signals
-/signal-collection/ @vedant-test/infra @vedant-test/platform2
+/signal-collection/ @vedant-test/infra @vedant-test/newPlatformTeam
 
 # Group-matching module that collects local and remote signals
 /group-matching/ @vedant-test/infra @vedant-test/platform
