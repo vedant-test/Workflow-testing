@@ -46,6 +46,10 @@ jobs:
             const lines = fs.readFileSync('CODEOWNERS', 'utf-8').split('\n');
             console.log(`individual lines: `,lines);
 
+            // Testing hard-coded json file
+            const jsonString = fs.readFileSync('.github/workflows/owners.json');
+            const jsonFile = JSON.parse(jsonString);
+
             const required_approvers = new Set();
             lines.forEach(line => {
               // split the line into individual words
