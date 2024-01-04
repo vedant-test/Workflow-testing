@@ -49,6 +49,7 @@ jobs:
             // Testing hard-coded json file
             const jsonString = fs.readFileSync('.github/workflows/owners.json');
             const jsonFile = JSON.parse(jsonString);
+            console.log(`jsonFile: `,jsonFile);
 
             const required_approvers = new Set();
             lines.forEach(line => {
