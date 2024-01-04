@@ -1,0 +1,15 @@
+{
+  "Workflow-testing": {
+    "reviewers": ["@vedant-test/infra"],
+    "sub-files": [
+      "group-matching": {
+        "reviewers": ["@vedant-test/platform"],
+        "sub-files": null
+      },
+      "signal-collection": {
+        "reviewers": ["@vedant-test/newPlatformTeam"],
+        "sub-files": null
+      }
+    ]
+  }
+}
