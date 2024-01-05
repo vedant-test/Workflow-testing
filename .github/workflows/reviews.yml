@@ -51,7 +51,7 @@ jobs:
               let temp_file_path = file_path;
               do {
                 // remove last word from the path
-                const last_index = file.lastIndexOf("/");
+                const last_index = temp_file_path.lastIndexOf("/");
                 temp_file_path = temp_file_path.substring(0, last_index);
                 console.log(`temp_file_path: `,temp_file_path);
 
