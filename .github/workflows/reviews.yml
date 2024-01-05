@@ -58,14 +58,18 @@ jobs:
                 // open the owners.txt file (if exists)
                 const owners_file_path = temp_file_path + "/owners.txt";
                 console.log(`owners_file_path: `,owners_file_path);
-                const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n');
-                console.log(`lines: `,lines);
-
-                for (const line of lines) {
-                  const approver_teams = line.trim().split(' ');
-                  for (const approver_team of approver_teams) {
-                    console.log(`approver_team: `,approver_team);
-                    required_approver_teams.add(approver_team);
+                const owners_file_exists = fs.existsSync(owners_file_path);
+                console.log(`owners_file_exists: `,owners_file_exists);
+                if (owners_file_exists) {
+                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n');
+                  console.log(`lines: `,lines);
+  
+                  for (const line of lines) {
+                    const approver_teams = line.trim().split(' ');
+                    for (const approver_team of approver_teams) {
+                      console.log(`approver_team: `,approver_team);
+                      required_approver_teams.add(approver_team);
+                    }
                   }
                 }
               } while(file.length > 0);
