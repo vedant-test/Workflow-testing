@@ -44,17 +44,34 @@ jobs:
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
 
-            // iterate through each path from list of changed files paths
+            // iterate through each path from list of changed_files_paths
+            const required_approver_teams = new Set();
+            const fs = require('fs');
             for (const file_path of changed_files_paths) {
-              let file = file_path;
-              let i = 0;
+              let temp_file_path = file_path;
               do {
+                // remove last word from the path
                 const last_index = file.lastIndexOf("/");
-                file = file.substring(0, last_index);
-                console.log(`file: `,file);
-                i++;
-              } while(i < 10);
+                temp_file_path = temp_file_path.substring(0, last_index);
+                console.log(`temp_file_path: `,temp_file_path);
+
+                // open the owners.txt file (if exists)
+                const owners_file_path = temp_file_path + "/owners.txt";
+                console.log(`owners_file_path: `,owners_file_path);
+                const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n');
+                console.log(`lines: `,lines);
+
+                for (const line of lines) {
+                  const approver_teams = line.trim().split(' ');
+                  for (const approver_team of approver_teams) {
+                    console.log(`approver_team: `,approver_team);
+                    required_approver_teams.add(approver_team);
+                  }
+                }
+              } while(file.length > 0);
             }
+
+            console.log(`required_approver_teams: `,required_approver_teams);
             
             github.rest.pulls.requestReviewers({
               owner: context.repo.owner,
