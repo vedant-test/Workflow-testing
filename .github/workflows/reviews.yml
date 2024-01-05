@@ -21,17 +21,36 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
-      - name: Github app token
+        
+      - name: Generate Github app token
         id: github-app-token
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Execute script
+          
+      - name: Execute script to add reviewers
         uses: actions/github-script@v7
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
+            // get the list of paths of changed files
+            const { execSync } = require('child_process');
+            const { commits } = context.payload.pull_request;
+            const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
+            const changed_files_paths = file_names.split('\n').filter(Boolean);
+            console.log(`changed_files_paths: `,changed_files_paths);
+
+            // iterate through each path from list of changed files paths
+            for (const file_path in changed_files_paths) {
+              const file = file_path
+              do {
+                const last_index = file.lastIndexOf("/");
+                const file = file.substring(0, last_index);
+                console.log(`file: `,file);
+              } while(file.length != 0);
+            }
+            
             github.rest.pulls.requestReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
