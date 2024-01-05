@@ -81,7 +81,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
-              team_reviewers: ["newplatformteam"]
+              team_reviewers: required_approver_teams
             });
   
   require-reviewers:
