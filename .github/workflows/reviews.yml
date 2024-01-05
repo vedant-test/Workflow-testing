@@ -19,14 +19,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
       - name: Github app token
         id: github-app-token
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Checkout the code
-        uses: actions/checkout@v3
       - name: Execute script
         uses: actions/github-script@v7
         with:
