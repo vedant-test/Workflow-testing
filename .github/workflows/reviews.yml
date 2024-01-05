@@ -72,7 +72,7 @@ jobs:
                     }
                   }
                 }
-              } while(file.length > 0);
+              } while(temp_file_path.length > 0);
             }
 
             console.log(`required_approver_teams: `,required_approver_teams);
