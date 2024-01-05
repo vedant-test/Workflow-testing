@@ -56,7 +56,7 @@ jobs:
                 console.log(`temp_file_path: `,temp_file_path);
 
                 // open the owners.txt file (if exists)
-                const owners_file_path = temp_file_path + ((temp_path_file.length > 0) ? "/" : "") + "owners.txt";
+                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "owners.txt";
                 console.log(`owners_file_path: `,owners_file_path);
                 const owners_file_exists = fs.existsSync(owners_file_path);
                 console.log(`owners_file_exists: `,owners_file_exists);
