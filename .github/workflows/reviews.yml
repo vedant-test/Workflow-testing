@@ -30,7 +30,7 @@ jobs:
       - name: Execute script
         uses: actions/github-script@v7
         with:
-          token: ${{ steps.github-app-token.outputs.token }}
+          github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
             github.rest.pulls.requestReviewers({
               owner: context.repo.owner,
