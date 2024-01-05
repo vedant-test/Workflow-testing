@@ -45,7 +45,7 @@ jobs:
             console.log(`changed_files_paths: `,changed_files_paths);
 
             // iterate through each path from list of changed files paths
-            for (const file_path in changed_files_paths) {
+            for (const file_path of changed_files_paths) {
               const file = file_path;
               let i = 0;
               do {
