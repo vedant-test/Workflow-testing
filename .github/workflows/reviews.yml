@@ -36,16 +36,16 @@ jobs:
         uses: actions/github-script@v7
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
-          script: |
-            const file_names2 = execSync(`git diff --name-only ${{ github.event.before }} ${{ github.event.after }}`);
-            console.log(`file_names2: `,file_names2);
-          
+          script: |    
             // get the list of paths of changed files
             const { execSync } = require('child_process');
             const { commits } = context.payload.pull_request;
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
+
+            const file_names2 = execSync(`git diff --name-only ${{ github.event.before }} ${{ github.event.after }}`);
+            console.log(`file_names2: `,file_names2);
 
             // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
