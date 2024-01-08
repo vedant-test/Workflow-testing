@@ -45,13 +45,13 @@ jobs:
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
 
-            const { data: commits } = await github.repos.listCommits({
+            const { data: commits2 } = await github.repos.listCommits({
               owner: context.repo.owner,
               repo: context.repo.repo,
               sha: context.payload.after
             });
             console.log(`context.payload.after: `,context.payload.after);
-            console.log(`data: `,commits[0]);
+            console.log(`data: `,commits2[0]);
 
             // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
