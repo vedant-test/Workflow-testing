@@ -52,6 +52,8 @@ jobs:
             });
             console.log(`context.payload.after: `,context.payload.after);
             console.log(`data: `,commits2[0]);
+            const myList = commits2[0].files.map(file => file.fileName);
+            console.log(`myList: `,myList);
 
             // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
