@@ -31,15 +31,21 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-          
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          echo "github.event_name: ${{ github.event_name }}"
+          echo "changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | xargs)" >> $GITHUB_OUTPUT
+
       - name: Execute script to add reviewers
         uses: actions/github-script@v7
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            console.log(`before: `,github.event.before);
-            console.log(`after: `,github.event.after);
-          
+            const check = ${{ steps.changed-files.outputs.changed_files }};
+            console.log(`check: `,check.toString());
+        
             // get the list of paths of changed files
             const { execSync } = require('child_process');
             const { commits } = context.payload.pull_request;
