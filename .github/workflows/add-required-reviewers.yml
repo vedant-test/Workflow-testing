@@ -45,7 +45,7 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            const check = ${{ steps.changed-files.outputs.changed_files }}
+            const check = ${{ steps.changed-files.outputs.changed_files }};
             console.log(`check: `,check);
             
             // get the list of paths of changed files
