@@ -106,3 +106,4 @@ jobs:
             if (reviewers.data.teams.size != 0) {
               core.setFailed('Fail the job');
             }
+
