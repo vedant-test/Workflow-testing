@@ -45,23 +45,6 @@ jobs:
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
 
-            const { data: commits2 } = await github.rest.repos.listCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: context.payload.after
-            });
-            console.log(`context.payload.after: `,context.payload.after);
-            console.log(`data: `,commits2[0]);
-
-            const { data: tree } = await github.rest.git.getTree({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tree_sha: commits2[0].commit.tree.sha
-            });
-            console.log(`tree: `,tree);
-            const myList2 = tree.tree.map(file => file.path);
-            console.log(`myList2: `,myList2);
-
             // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
             const fs = require('fs');
