@@ -37,6 +37,9 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
+            console.log(`before: `,github.event.before);
+            console.log(`after: `,github.event.after);
+          
             // get the list of paths of changed files
             const { execSync } = require('child_process');
             const { commits } = context.payload.pull_request;
