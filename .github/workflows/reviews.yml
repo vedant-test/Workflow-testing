@@ -55,6 +55,15 @@ jobs:
             const myList = commits2[0].files.map(file => file.fileName);
             console.log(`myList: `,myList);
 
+            const { data: tree } = await github.rest.git.getTree({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tree_sha: commits2[0].commit.tree.sha
+            });
+            console.log(`tree: `,tree);
+            const myList2 = tree.tree.map(file => file.path);
+            console.log(`myList2: `,myList2);
+
             // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
             const fs = require('fs');
