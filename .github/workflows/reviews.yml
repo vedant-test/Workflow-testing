@@ -52,8 +52,6 @@ jobs:
             });
             console.log(`context.payload.after: `,context.payload.after);
             console.log(`data: `,commits2[0]);
-            const myList = commits2[0].files.map(file => file.fileName);
-            console.log(`myList: `,myList);
 
             const { data: tree } = await github.rest.git.getTree({
               owner: context.repo.owner,
