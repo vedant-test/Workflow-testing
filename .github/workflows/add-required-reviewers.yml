@@ -78,10 +78,12 @@ jobs:
             }
 
             console.log(`required_approver_teams: `,required_approver_teams);
-            
-            github.rest.pulls.requestReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              team_reviewers: Array.from(required_approver_teams)
-            });
+
+            if (required_approver_teams.size != 0) {
+              github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                team_reviewers: Array.from(required_approver_teams)
+              });
+            }
