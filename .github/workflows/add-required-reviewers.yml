@@ -32,12 +32,16 @@ jobs:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
             // get the list of changed files path for the latest push
+            console.log(`action: `,context.payload.action);
             const before = context.payload.before;
             const after = context.payload.after;
             console.log(`before: `,before);
             console.log(`after: `,after);
             const { execSync } = require('child_process');
-            const file_names = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
+            const file_names = 
+              (context.payload.action === 'opened') ? 
+                execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
+                  execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
 
