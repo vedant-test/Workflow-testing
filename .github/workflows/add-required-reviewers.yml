@@ -36,9 +36,6 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            const changed_files2 = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
-            console.log(`changed_files2: `,changed_files2);
-          
             const after = context.payload.after;
             console.log(`2: `,after);
 
@@ -51,6 +48,9 @@ jobs:
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
+
+            const changed_files2 = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
+            console.log(`changed_files2: `,changed_files2);
 
             // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
