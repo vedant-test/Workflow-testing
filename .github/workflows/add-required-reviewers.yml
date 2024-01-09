@@ -51,7 +51,7 @@ jobs:
             console.log(`before: `,before);
             console.log(`after: `,after);
             const changed_files_paths = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
-            console.log(`changed_files2: `,changed_files2);
+            console.log(`changed_files_paths: `,changed_files_paths);
 
             const required_approver_teams = new Set();
             const fs = require('fs');
