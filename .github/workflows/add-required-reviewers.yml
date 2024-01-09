@@ -1,9 +1,10 @@
 name: Add Required Reviewers
 
 on:
-  push:
-    branches:
-      - '*'
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   add-reviewers:
@@ -36,12 +37,14 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
+            const before = context.payload.before;
             const after = context.payload.after;
+            console.log(`1: `,before);
             console.log(`2: `,after);
             
             // get the list of paths of changed files
             const { execSync } = require('child_process');
-            const commits = context.payload.commits.length;
+            const commits = context.payload.pull_request;
             console.log(`commits: `,commits);
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
