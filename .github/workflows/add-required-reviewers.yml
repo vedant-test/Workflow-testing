@@ -38,6 +38,8 @@ jobs:
           script: |
             const after = context.payload.after;
             console.log(`2: `,after);
+
+            console.log(`1: `,context.payload.pull_request.number);
             
             // get the list of paths of changed files
             const { execSync } = require('child_process');
