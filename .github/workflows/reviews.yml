@@ -44,11 +44,12 @@ jobs:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
             const before1 = github.event.before;
-            const before = ${{ github.event.before }};
-            const after = ${{ github.event.after }};
+            console.log(`before1: `,before1);
+            // const before = ${{ github.event.before }};
+            // const after = ${{ github.event.after }};
 
-            const abcList = execSync(`git diff --name-only ${before} ${after} | xargs`).toString();
-            console.log(`abcList: `,abcList);
+            // const abcList = execSync(`git diff --name-only ${before} ${after} | xargs`).toString();
+            // console.log(`abcList: `,abcList);
         
             // get the list of paths of changed files
             const { execSync } = require('child_process');
