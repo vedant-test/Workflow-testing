@@ -36,7 +36,7 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            const after = github.context.payload.after;
+            const after = context.payload.after;
             console.log(`2: `,after);
             
             // get the list of paths of changed files
