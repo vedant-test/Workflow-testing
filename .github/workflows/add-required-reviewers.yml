@@ -50,7 +50,7 @@ jobs:
             
             // get the list of paths of changed files
             const { execSync } = require('child_process');
-            const commits = context.payload.pull_request;
+            const { commits } = context.payload.pull_request;
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
