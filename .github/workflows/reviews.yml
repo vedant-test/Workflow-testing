@@ -1,0 +1,107 @@
+name: Reviews
+on:
+  push:
+    branches:
+      - '*'
+jobs:
+  add-reviewers:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Generate Github app token
+        id: github-app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          echo "github.event_name: ${{ github.event_name }}"
+          echo "changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | xargs)" >> $GITHUB_OUTPUT
+
+      - name: Execute script to add reviewers
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.github-app-token.outputs.token }}
+          script: |
+            // get the list of paths of changed files
+            const { execSync } = require('child_process');
+            const commits = context.payload.commits.length;
+            console.log(`commits: `,commits);
+            const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
+            console.log(`file_names: `,file_names);
+            const changed_files_paths = file_names.split('\n').filter(Boolean);
+            console.log(`changed_files_paths: `,changed_files_paths);
+
+            // iterate through each path from list of changed_files_paths
+            const required_approver_teams = new Set();
+            const fs = require('fs');
+            for (const file_path of changed_files_paths) {
+              let temp_file_path = file_path;
+              do {
+                // remove last word from the path
+                const last_index = temp_file_path.lastIndexOf("/");
+                temp_file_path = temp_file_path.substring(0, last_index);
+                console.log(`temp_file_path: `,temp_file_path);
+
+                // open the owners.txt file (if exists)
+                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "owners.txt";
+                console.log(`owners_file_path: `,owners_file_path);
+                const owners_file_exists = fs.existsSync(owners_file_path);
+                console.log(`owners_file_exists: `,owners_file_exists);
+                if (owners_file_exists) {
+                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n');
+                  console.log(`lines: `,lines);
+  
+                  for (const line of lines) {
+                    const approver_teams = line.trim().split(' ').filter(str => str !== '');
+                    for (const approver_team of approver_teams) {
+                      console.log(`approver_team: `,approver_team);
+                      required_approver_teams.add(approver_team);
+                    }
+                  }
+                }
+              } while(temp_file_path.length > 0);
+            }
+
+            console.log(`required_approver_teams: `,required_approver_teams);
+            
+            github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              team_reviewers: Array.from(required_approver_teams)
+            });
+  
+  check-reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      
+      - name: Execute script
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const reviewers = await github.rest.pulls.listRequestedReviewers({
+              ...context.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            console.log(`list of requested reviewers: `,reviewers);
+
+            if (reviewers.data.teams.size != 0) {
+              core.setFailed('Fail the job');
+            }
