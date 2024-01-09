@@ -1,17 +1,8 @@
 name: Reviews
 on:
-  pull_request_review:
-    types:
-      - submitted
-      - edited
-      - dismissed
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
-      - unlabeled
+  push:
+    branches:
+      - '*'
 jobs:
   add-reviewers:
     runs-on: ubuntu-latest
@@ -45,7 +36,7 @@ jobs:
           script: |
             // get the list of paths of changed files
             const { execSync } = require('child_process');
-            const { commits } = context.payload.pull_request;
+            const commits = context.payload.commits.length;
             console.log(`commits: `,commits);
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
             console.log(`file_names: `,file_names);
