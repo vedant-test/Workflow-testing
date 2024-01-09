@@ -62,7 +62,7 @@ jobs:
                   console.log(`lines: `,lines);
 
                   for (const line of lines) {
-                    const approver_teams = line.trim().split(' ').filter(str => str !== '').map(word => word.subsrting(1));
+                    const approver_teams = line.trim().split(' ').filter(str => str !== '').map(word => word.substring(1));
                     console.log(`approver_teams: `,approver_teams);
                     // for (const approver_team of approver_teams) {
                       // required_approver_teams.add(approver_team);
