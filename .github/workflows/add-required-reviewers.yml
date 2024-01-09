@@ -36,6 +36,9 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
+            const changed_files2 = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
+            console.log(`changed_files2: `,changed_files2);
+          
             const after = context.payload.after;
             console.log(`2: `,after);
 
