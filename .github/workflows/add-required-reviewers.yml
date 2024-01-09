@@ -55,17 +55,34 @@ jobs:
 
             const required_approver_teams = new Set();
             const fs = require('fs');
+            for (const file_path of changed_files_paths) {
+              let temp_file_path = file_path;
+              do {
+                // remove last word from the path
+                const last_index = temp_file_path.lastIndexOf("/");
+                temp_file_path = temp_file_path.substring(0, last_index);
+                console.log(`temp_file_path: `,temp_file_path);
+                // open the owners.txt file (if exists)
+                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "owners.txt";
+                console.log(`owners_file_path: `,owners_file_path);
+                const owners_file_exists = fs.existsSync(owners_file_path);
+                console.log(`owners_file_exists: `,owners_file_exists);
+                if (owners_file_exists) {
+                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n');
+                  console.log(`lines: `,lines);
+  
+                  for (const line of lines) {
+                    const approver_teams = line.trim().split(' ').filter(str => str !== '');
+                    for (const approver_team of approver_teams) {
+                      console.log(`approver_team: `,approver_team);
+                      required_approver_teams.add(approver_team);
+                    }
+                  }
+                }
+              } while(temp_file_path.length > 0);
+            }
             
-
             console.log(`required_approver_teams: `,required_approver_teams);
-
-            github.rest.pulls.removeRequestedReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              reviewers: [],
-              team_reviewers: ['infra']
-            });
 
             if (required_approver_teams.size != 0) {
               github.rest.pulls.requestReviewers({
