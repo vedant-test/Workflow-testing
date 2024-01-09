@@ -59,7 +59,7 @@ jobs:
 
             console.log(`required_approver_teams: `,required_approver_teams);
 
-            github.pulls.removeReviewRequest({
+            github.rest.pulls.removeRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
