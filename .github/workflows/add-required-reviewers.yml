@@ -8,6 +8,7 @@ on:
 
 jobs:
   add-reviewers:
+    name: Add Reviewers
     runs-on: ubuntu-latest
     permissions:
       contents: write
