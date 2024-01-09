@@ -1,0 +1,83 @@
+name: Add Required Reviewers
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  add-reviewers:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Generate GitHub App token
+        id: github-app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      
+      - name: Execute script to add reviewers on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.github-app-token.outputs.token }}
+          script: |
+            // get the list of changed files path for the latest push
+            const before = context.payload.before;
+            const after = context.payload.after;
+            console.log(`before: `,before);
+            console.log(`after: `,after);
+            const { execSync } = require('child_process');
+            const file_names = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
+            const changed_files_paths = file_names.split('\n').filter(Boolean);
+            console.log(`changed_files_paths: `,changed_files_paths);
+
+            // required approver teams
+            const required_approver_teams = new Set();
+            const fs = require('fs');
+            for (const file_path of changed_files_paths) {
+              let temp_file_path = file_path;
+              do {
+                // remove last word from the path
+                const last_index = temp_file_path.lastIndexOf("/");
+                temp_file_path = temp_file_path.substring(0, last_index);
+                console.log(`temp_file_path: `,temp_file_path);
+
+                // open the owners.txt file (if exists)
+                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "OWNERS.txt";
+                console.log(`owners_file_path: `,owners_file_path);
+                const owners_file_exists = fs.existsSync(owners_file_path);
+                console.log(`owners_file_exists: `,owners_file_exists);
+                if (owners_file_exists) {
+                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n').filter(line => line.startsWith('@'));
+                  console.log(`lines: `,lines);
+
+                  for (const line of lines) {
+                    const approver_teams = line.trim().split(' ').filter(str => str !== '').map(word => word.substring(1));
+                    for (const approver_team of approver_teams) {
+                      required_approver_teams.add(approver_team);
+                    }
+                  }
+                }
+              } while(temp_file_path.length > 0);
+            }
+            
+            console.log(`required_approver_teams: `,required_approver_teams);
+
+            if (required_approver_teams.size != 0) {
+              github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                team_reviewers: Array.from(required_approver_teams)
+              });
+            }

@@ -1,0 +1,34 @@
+name: Check Required Reviewers Approvals
+
+on:
+  pull_request_review:
+    types:
+      - submitted
+      - edited
+      - dismissed
+
+jobs:
+  check-reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Execute script
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const reviewers = await github.rest.pulls.listRequestedReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+
+            console.log(`list of requested reviewers: `,reviewers);
+
+            if (reviewers.data.teams.size != 0) {
+              core.setFailed('Fail the job');
+            }
