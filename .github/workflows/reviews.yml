@@ -43,14 +43,18 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
+            const before = ${{ github.event.before }};
+            const after = ${{ github.event.after }};
 
-            console.log(`1: `,${{ github.event.before }});
+            const abcList = execSync(`git diff --name-only ${before} ${after} | xargs`).toString();
+            console.log(`abcList: `,abcList);
         
             // get the list of paths of changed files
             const { execSync } = require('child_process');
             const { commits } = context.payload.pull_request;
             console.log(`commits: `,commits);
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
+            console.log(`file_names: `,file_names);
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
 
