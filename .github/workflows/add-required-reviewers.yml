@@ -53,20 +53,20 @@ jobs:
                 console.log(`temp_file_path: `,temp_file_path);
 
                 // open the owners.txt file (if exists)
-                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "owners.txt";
+                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "OWNERS.txt";
                 console.log(`owners_file_path: `,owners_file_path);
                 const owners_file_exists = fs.existsSync(owners_file_path);
                 console.log(`owners_file_exists: `,owners_file_exists);
                 if (owners_file_exists) {
-                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n');
+                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n').filter(line => line.startsWith('@'));
                   console.log(`lines: `,lines);
-  
+
                   for (const line of lines) {
-                    const approver_teams = line.trim().split(' ').filter(str => str !== '');
-                    for (const approver_team of approver_teams) {
-                      console.log(`approver_team: `,approver_team);
-                      required_approver_teams.add(approver_team);
-                    }
+                    const approver_teams = line.trim().split(' ').filter(str => str !== '').map(word => word.subsrting(1));
+                    console.log(`approver_teams: `,approver_teams);
+                    // for (const approver_team of approver_teams) {
+                      // required_approver_teams.add(approver_team);
+                    // }
                   }
                 }
               } while(temp_file_path.length > 0);
