@@ -29,7 +29,6 @@ jobs:
       - name: Get changed files of latest push
         id: changed-files
         run: |
-          echo "github.event_name: ${{ github.event_name }}"
           echo "changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | xargs)" >> $GITHUB_OUTPUT
       
       - name: Execute script to add reviewers on PR
@@ -37,23 +36,23 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            const before = context.payload.before;
-            const after = context.payload.after;
-            console.log(`1: `,before);
-            console.log(`2: `,after);
-            
-            // get the list of paths of changed files
             const { execSync } = require('child_process');
+            
+            // get all the changed files
             const { commits } = context.payload.pull_request;
             console.log(`commits: `,commits);
             const file_names = execSync(`git diff --name-only HEAD HEAD~${commits}`).toString();
-            const changed_files_paths = file_names.split('\n').filter(Boolean);
+            const all_changed_files_paths = file_names.split('\n').filter(Boolean);
             console.log(`changed_files_paths: `,changed_files_paths);
 
-            const changed_files2 = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
+            // get the changed files for the latest push
+            const before = context.payload.before;
+            const after = context.payload.after;
+            console.log(`before: `,before);
+            console.log(`after: `,after);
+            const changed_files_paths = execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             console.log(`changed_files2: `,changed_files2);
 
-            // iterate through each path from list of changed_files_paths
             const required_approver_teams = new Set();
             const fs = require('fs');
             for (const file_path of changed_files_paths) {
@@ -85,6 +84,13 @@ jobs:
             }
 
             console.log(`required_approver_teams: `,required_approver_teams);
+
+            github.pulls.removeReviewRequest({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              team_reviewers: ['infra']
+            });
 
             if (required_approver_teams.size != 0) {
               github.rest.pulls.requestReviewers({
