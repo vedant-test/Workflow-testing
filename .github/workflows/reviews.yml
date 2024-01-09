@@ -47,6 +47,8 @@ jobs:
               console.log(`file: `,file);
             }
             console.log(`check: `,check.toString());
+
+            console.log(`1: `,${{ github.event.before }});
         
             // get the list of paths of changed files
             const { execSync } = require('child_process');
