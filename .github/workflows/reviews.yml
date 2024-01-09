@@ -43,7 +43,7 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            for (const file of steps.changed-files.outputs.changed_files) {
+            for (const file of ${{ steps.changed-files.outputs.changed_files }}) {
               console.log(`file: `,file);
             }
             console.log(`check: `,check.toString());
