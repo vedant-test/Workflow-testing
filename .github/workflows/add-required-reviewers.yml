@@ -107,7 +107,7 @@ jobs:
             console.log(`all_changed_files: `,all_changed_files);
             const reviewers_for_changed_files_in_current_push = extractReviewers(changed_file_paths_in_current_push)
             const intersection = getIntersection(extractReviewers(changed_file_paths_before_last_push), reviewers_for_changed_files_in_current_push)
-            let result = Set()
+            let result = new Set()
             if(intersection.size > 0) {
               result = getIntersection(extractReviewers(all_changed_files), reviewers_for_changed_files_in_current_push)
             }
