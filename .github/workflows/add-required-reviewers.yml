@@ -46,8 +46,6 @@ jobs:
             const changed_files_paths = file_names.split('\n').filter(Boolean);
             const changed_files_until_last_push = ''
             
-            # const count = execSync(`git rev-list --count ${ context.payload.before }..${ context.payload.after }`)
-            # console.log(`Count: `,count)
             if(context.payload.action === 'synchronize') {
               changed_files_until_last_push = execSync(`git diff --name-only main..${context.payload.after}`).toString()
             }
