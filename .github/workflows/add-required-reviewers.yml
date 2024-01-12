@@ -103,8 +103,10 @@ jobs:
             console.log(`changed_files_paths: `,changed_files_paths);
             console.log(`all_changed_files: `,all_changed_files);
             const result = getIntersection(extractReviewers(all_changed_files), extractReviewers(changed_files_paths))
-
-            if (required_approver_teams.size != 0) {
+            console.log(`result: `,result)
+            console.log(`length: `,result.length)
+            console.log(`size: `,result.size)
+            if (result.length != 0) {
               github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
