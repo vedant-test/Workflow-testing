@@ -27,7 +27,7 @@ jobs:
               pull_number: context.payload.pull_request.number
             });
 
-            console.log(`list of requested reviewers: `,reviewers);
+            console.log(`list of requested reviewers: `,JSON.parse(reviewers));
 
             if (reviewers.data.teams.size != 0) {
               core.setFailed('Fail the job');
