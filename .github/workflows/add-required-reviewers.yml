@@ -42,7 +42,6 @@ jobs:
             // get the list of changed files path for the latest push
             console.log(`action: `,context.payload.action);
             console.log(`base sha: `,${{ steps.get_base_sha.outputs.base_sha }})
-            const base_sha = ${{ steps.get_base_sha.outputs.base_sha }}
             const before = context.payload.before;
             const after = context.payload.after;
             console.log(`before: `,before);
@@ -53,7 +52,7 @@ jobs:
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
-            const changed_files_total = execSync(`git diff --name-only ${context.payload.after}`).toString()
+            const changed_files_total = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
           
             
             console.log(`changed_files_paths: `,changed_files_paths);
