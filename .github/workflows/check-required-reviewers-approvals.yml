@@ -6,6 +6,9 @@ on:
       - submitted
       - edited
       - dismissed
+  pull_request:
+    types:
+      - synchronize
 
 jobs:
   check-reviews:
