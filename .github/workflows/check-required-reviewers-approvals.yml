@@ -24,15 +24,22 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const reviewers = await github.rest.pulls.listRequestedReviewers({
+            const requestedReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number
             });
 
-            console.log(`list of requested reviewers: `,reviewers);
-            console.log(`teams.size: `,reviewers.data.teams);
-            console.log(`teams.size: `,reviewers.data.teams.length);
+            const reviewers = await github.rest.pulls.listReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            console.log(`list of reviewers: `,reviewers);
+            
+
+            console.log(`list of requested reviewers: `,requestedReviewers);
+            console.log(`teams.size: `,reviewers.data.teams.size);
 
             if (reviewers.data.teams.length !== 0) {
               core.setFailed('Fail the job');
