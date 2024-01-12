@@ -52,11 +52,8 @@ jobs:
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
-            const changed_files_total = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
-          
             
             console.log(`changed_files_paths: `,changed_files_paths);
-            console.log(`changed_files_total: `,changed_files_total);
 
             // required approver teams
             const required_approver_teams = new Set();
