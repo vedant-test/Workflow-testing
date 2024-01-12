@@ -28,6 +28,7 @@ jobs:
             });
 
             console.log(`list of requested reviewers: `,reviewers);
+            console.log(`teams.size: `,reviewers.data.teams);
             console.log(`teams.size: `,reviewers.data.teams.size);
 
             if (reviewers.data.teams.size !== 0) {
