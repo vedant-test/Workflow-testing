@@ -94,15 +94,26 @@ jobs:
               (context.payload.action === 'opened') ? 
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
-            const changed_file_paths_in_current_pr = changed_file_names_in_current_push.split('\n').filter(Boolean);
+            const changed_file_paths_in_current_push = changed_file_names_in_current_push.split('\n').filter(Boolean);
              let changed_files_in_entire_pr = ''
+             let changed_files_before_last_push = ''
              if(context.payload.action === 'synchronize') {
              changed_files_in_entire_pr = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
+             changed_files_before_last_push = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.before}`).toString()
             }
             let all_changed_files = changed_files_in_entire_pr.split('\n').filter(Boolean)
-            console.log(`changed_file_paths_in_current_pr: `,changed_file_paths_in_current_pr);
+            let changed_file_paths_before_last_push = changed_files_before_last_push.split('\n').filter(Boolean)
+            console.log(`changed_file_paths_in_current_push: `,changed_file_paths_in_current_push);
             console.log(`all_changed_files: `,all_changed_files);
-            const result = getIntersection(extractReviewers(all_changed_files), extractReviewers(changed_file_paths_in_current_pr))
+            const reviewers_for_changed_files_in_current_push = extractReviewers(changed_file_paths_in_current_push)
+            const intersection = getIntersection(extractReviewers(changed_file_paths_before_last_push), reviewers_for_changed_files_in_current_push)
+            let result = new Set()
+            if(intersection.size > 0) {
+              result = getIntersection(extractReviewers(all_changed_files), reviewers_for_changed_files_in_current_push)
+            }
+            else {
+              result = reviewers_for_changed_files_in_current_push
+            }
             console.log(`result: `,result)
             console.log(`length: `,result.length)
             console.log(`size: `,result.size)
