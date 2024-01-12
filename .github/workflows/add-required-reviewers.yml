@@ -40,6 +40,9 @@ jobs:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
             // get the list of changed files path for the latest push
+            function printme() {
+            console.log("printme function")
+            }
             console.log(`action: `,context.payload.action);
             const before = context.payload.before;
             const after = context.payload.after;
@@ -97,6 +100,7 @@ jobs:
             }
             
             console.log(`required_approver_teams: `,required_approver_teams);
+            printme()
 
             if (required_approver_teams.size != 0) {
               github.rest.pulls.requestReviewers({
