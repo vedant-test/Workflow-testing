@@ -54,7 +54,7 @@ jobs:
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
-             const changed_files_total = ''
+             let changed_files_total = ''
              if(context.payload.action === 'synchronize') {
              changed_files_total = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
             }
