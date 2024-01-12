@@ -32,7 +32,7 @@ jobs:
 
             console.log(`list of requested reviewers: `,reviewers);
             console.log(`teams.size: `,reviewers.data.teams);
-            console.log(`teams.size: `,reviewers.data.teams.lenght);
+            console.log(`teams.size: `,reviewers.data.teams.length);
 
             if (reviewers.data.teams.length !== 0) {
               core.setFailed('Fail the job');
