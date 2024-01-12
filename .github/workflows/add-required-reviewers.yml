@@ -31,6 +31,7 @@ jobs:
         id: get_base_sha
         run: |
           base_sha=${{ github.event.pull_request.base.sha }}
+          echo "base_sha: $base_sha"
           echo "::set-output name=base_sha::$base_sha"
       
       - name: Execute script to add reviewers on PR
@@ -40,7 +41,8 @@ jobs:
           script: |
             // get the list of changed files path for the latest push
             console.log(`action: `,context.payload.action);
-            console.log(`base sha: `,${{ github.event.pull_request.base.sha }})
+            console.log(`base sha d: `,steps.get_base_sha.base_sha)
+            console.log(`base sha: `,${{ steps.get_base_sha.base_sha }})
             const before = context.payload.before;
             const after = context.payload.after;
             console.log(`before: `,before);
