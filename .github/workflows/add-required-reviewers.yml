@@ -44,7 +44,48 @@ jobs:
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
+            const changed_files_until_last_push = ''
+            
+            # const count = execSync(`git rev-list --count ${ context.payload.before }..${ context.payload.after }`)
+            # console.log(`Count: `,count)
+            if(context.payload.action === 'synchronize') {
+              changed_files_until_last_push = execSync(`git diff --name-only main..${context.payload.after}`).toString()
+            }
             console.log(`changed_files_paths: `,changed_files_paths);
+            console.log(`changed_files_until_last_push: `,changed_files_until_last_push);
+
+            // Get reviewers for all the changes in the PR
+            const required_approver_teams_until_last_push = new Set();
+            const fs = require('fs');
+            for (const file_path of changed_files_until_last_push) {
+              let temp_file_path = file_path;
+              do {
+                // remove last word from the path
+                const last_index = temp_file_path.lastIndexOf("/");
+                temp_file_path = temp_file_path.substring(0, last_index);
+                console.log(`temp_file_path: `,temp_file_path);
+
+                // open the CODEOWNERS file (if exists)
+                const owners_file_path = temp_file_path + ((temp_file_path.length > 0) ? "/" : "") + "CODEOWNERS";
+                console.log(`owners_file_path: `,owners_file_path);
+                const owners_file_exists = fs.existsSync(owners_file_path);
+                console.log(`owners_file_exists: `,owners_file_exists);
+                if (owners_file_exists) {
+                  const lines = fs.readFileSync(owners_file_path, 'utf-8').split('\n').filter(line => line.startsWith('@'));
+                  console.log(`lines: `,lines);
+
+                  for (const line of lines) {
+                    const approver_teams = line.trim().split(' ').filter(str => str !== '').map(word => word.substring(1));
+                    for (const approver_team of approver_teams) {
+                      required_approver_teams.add(approver_team);
+                    }
+                  }
+                }
+              } while(temp_file_path.length > 0);
+            }
+            
+            console.log(`required_approver_teams_until_last_push: `,required_approver_teams_until_last_push);
+            
 
             // required approver teams
             const required_approver_teams = new Set();
