@@ -27,7 +27,7 @@ jobs:
               pull_number: context.payload.pull_request.number
             });
 
-            const reviewers = await github.rest.pulls.listReviewers({
+            const reviewers = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number
