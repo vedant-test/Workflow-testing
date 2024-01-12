@@ -90,23 +90,23 @@ jobs:
             console.log(`before: `,before);
             console.log(`after: `,after);
             const { execSync } = require('child_process');
-            const file_names = 
+            const changed_file_names_in_current_push = 
               (context.payload.action === 'opened') ? 
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
-            const changed_files_paths = file_names.split('\n').filter(Boolean);
-             let changed_files_total = ''
+            const changed_file_paths_in_current_pr = changed_file_names_in_current_push.split('\n').filter(Boolean);
+             let changed_files_in_entire_pr = ''
              if(context.payload.action === 'synchronize') {
-             changed_files_total = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
+             changed_files_in_entire_pr = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
             }
-            let all_changed_files = changed_files_total.split('\n').filter(Boolean)
-            console.log(`changed_files_paths: `,changed_files_paths);
+            let all_changed_files = changed_files_in_entire_pr.split('\n').filter(Boolean)
+            console.log(`changed_file_paths_in_current_pr: `,changed_file_paths_in_current_pr);
             console.log(`all_changed_files: `,all_changed_files);
-            const result = getIntersection(extractReviewers(all_changed_files), extractReviewers(changed_files_paths))
+            const result = getIntersection(extractReviewers(all_changed_files), extractReviewers(changed_file_paths_in_current_pr))
             console.log(`result: `,result)
             console.log(`length: `,result.length)
             console.log(`size: `,result.size)
-            if (result.length != 0) {
+            if (result.size != 0) {
               github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
