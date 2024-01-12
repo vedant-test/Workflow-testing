@@ -40,6 +40,9 @@ jobs:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
             // get the list of changed files path for the latest push
+            function printme() {
+            console.log("printme function")
+            }
             console.log(`action: `,context.payload.action);
             const before = context.payload.before;
             const after = context.payload.after;
@@ -51,14 +54,24 @@ jobs:
                 execSync(`git diff --name-only HEAD HEAD~1`).toString() : 
                   execSync(`git diff --name-only ${context.payload.before} ${context.payload.after}`).toString();
             const changed_files_paths = file_names.split('\n').filter(Boolean);
-             const changed_files_total = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
-            
+             const changed_files_total = ''
+             if(context.payload.action === 'synchronize') {
+             changed_files_total = execSync(`git diff --name-only ${{ steps.get_base_sha.outputs.base_sha }} ${context.payload.after}`).toString()
+            }
+            const all_changed_files = changed_files_total.split('\n').filter(Boolean)
             console.log(`changed_files_paths: `,changed_files_paths);
-            console.log(`changed_files_total: `,changed_files_total);
+            console.log(`all_changed_files: `,all_changed_files);
 
+            // get reviewers of entire PR
+            const all_teams = new Set();
+            const fs = require('fs');
+            for(const file_path of all_changed_files) {
+              let temp_file_path = file_path;
+              console.log(`temp_file_path: `, temp_file_path)
+            }
+            
             // required approver teams
             const required_approver_teams = new Set();
-            const fs = require('fs');
             for (const file_path of changed_files_paths) {
               let temp_file_path = file_path;
               do {
@@ -87,6 +100,7 @@ jobs:
             }
             
             console.log(`required_approver_teams: `,required_approver_teams);
+            printme()
 
             if (required_approver_teams.size != 0) {
               github.rest.pulls.requestReviewers({
