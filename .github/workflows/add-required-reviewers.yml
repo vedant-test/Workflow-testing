@@ -39,8 +39,10 @@ jobs:
         with:
           github-token: ${{ steps.github-app-token.outputs.token }}
           script: |
-            // get the list of changed files path for the latest push
-         
+            // get the list of changed files path for the latest pus
+            function printme() {
+            console.log("printme called")
+            }
             console.log(`action: `,context.payload.action);
             const before = context.payload.before;
             const after = context.payload.after;
@@ -96,7 +98,7 @@ jobs:
                 }
               } while(temp_file_path.length > 0);
             }
-            
+            printme()
             console.log(`required_approver_teams: `,required_approver_teams);
 
             if (required_approver_teams.size != 0) {
