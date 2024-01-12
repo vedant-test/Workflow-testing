@@ -40,7 +40,7 @@ jobs:
           script: |
             // get the list of changed files path for the latest push
             console.log(`action: `,context.payload.action);
-            console.log(`base sha: `,${{ steps.get_base_sha.base_sha }})
+            console.log(`base sha: `,${{ github.event.pull_request.base.sha }})
             const before = context.payload.before;
             const after = context.payload.after;
             console.log(`before: `,before);
