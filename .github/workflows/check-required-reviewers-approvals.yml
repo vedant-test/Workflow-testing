@@ -34,7 +34,31 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number
             });
+            const pr_number = context.payload.pull_request.number
             console.log(`list of reviewers: `,reviewers);
+
+            const query = `query($owner:String!, $name:String!) {
+              repository(owner:$owner, name:$name){
+                pullRequest(number: $pr_number) {
+                reviews(first: 100, states: APPROVED) {
+                  nodes {
+                    author {
+                      login
+                    }
+                    onBehalfOf {
+                      after: "0"
+                    }
+                  }
+                }
+              }
+              }
+            }`;
+            const variables = {
+              owner: context.repo.owner,
+              name: context.repo.repo
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result)
             
 
             console.log(`list of requested reviewers: `,requestedReviewers);
