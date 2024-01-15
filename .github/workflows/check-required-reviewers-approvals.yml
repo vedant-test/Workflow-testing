@@ -36,7 +36,7 @@ jobs:
             console.log(`list of reviewers: `,reviewers);
 
             const query = `query($owner:String!, $name:String!, $pr_number: String!) {
-              repository(owner:$owner, name:$name, pr_number: $pr_number){
+              repository(owner:$owner, name:$name){
                 pullRequest(number: pr_number) {
                 reviews(first: 100, states: APPROVED) {
                   nodes {
