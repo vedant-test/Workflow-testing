@@ -109,9 +109,28 @@ jobs:
             console.log(`all_changed_files: `,all_changed_files);
             console.log(`changed_files_before_last_push: `,changed_files_before_last_push);
             const reviewers_for_changed_files_in_current_push = extractReviewers(changed_file_paths_in_current_push)
-            const intersection = getIntersection(extractReviewers(changed_file_paths_before_last_push), reviewers_for_changed_files_in_current_push)
+            const reviewers_for_changed_files_in_before_last_push = extractReviewers(changed_file_paths_before_last_push)
+            const reviewers_for_all_changed_files = extractReviewers(all_changed_files)
+            console.log(`reviewers_for_changed_files_in_current_push: `,reviewers_for_changed_files_in_current_push)
+            console.log(`reviewers_for_changed_files_in_before_last_push: `,reviewers_for_changed_files_in_before_last_push)
+            console.log(`reviewers_for_all_changed_files: `,reviewers_for_all_changed_files)
+            const intersection = getIntersection(reviewers_for_changed_files_in_before_last_push, reviewers_for_changed_files_in_current_push)
+            
             if(intersection.size > 0) {
-              result = getIntersection(extractReviewers(all_changed_files), reviewers_for_changed_files_in_current_push)
+              result = getIntersection(reviewers_for_all_changed_files, reviewers_for_changed_files_in_current_push)
+              const reviewersToBeRemoved = new Set()
+              for(let i of intersection) {
+              if(reviewers_for_all_changed_files.has(i) === false) {
+                reviewersToBeRemoved.add(i)
+              }
+              }
+              console.log(`reviewersToBeRemoved `, reviewersToBeRemoved);
+              github.rest.pulls.removeRequestedReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              team_reviewers: Array.from(reviewersToBeRemoved)
+              })
             }
             else {
               result = reviewers_for_changed_files_in_current_push
