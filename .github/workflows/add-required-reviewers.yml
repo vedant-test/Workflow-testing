@@ -124,7 +124,7 @@ jobs:
                 reviewersToBeRemoved.add(i)
               }
               }
-              console.log(`reviewersToBeRemoved `, reviewersToBeRemoved);
+
               github.rest.pulls.removeRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
