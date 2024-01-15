@@ -41,15 +41,23 @@ jobs:
                 reviews(first: 100, states: APPROVED) {
                   nodes {
                     author {
+                      avatarUrl
                       login
+                      resourcePath
+                      url
                     }
-                    onBehalfOf {
-                    }
+                    
                   }
                 }
               }
               }
             }`;
+            const variables = {
+              owner: context.repo.owner,
+              name: context.repo.repo,
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result)
             const variables = {
               owner: context.repo.owner,
               name: context.repo.repo
