@@ -125,15 +125,6 @@ jobs:
               }
               }
 
-              const usersToBeRemoved = []
-              for(let team in reviewersToBeRemoved) {
-                const members = github.rest.orgs.listMembersInOrg({
-                org: 'vedant-test'
-                team_slug: team
-                })
-                console.log(`members: `,members)
-              }
-              console.log(`reviewersToBeRemoved `, reviewersToBeRemoved);
               github.rest.pulls.removeRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
