@@ -6,6 +6,9 @@ on:
       - submitted
       - edited
       - dismissed
+  pull_request:
+    types:
+      - synchronize
 
 jobs:
   check-reviews:
@@ -38,6 +41,6 @@ jobs:
             console.log(`list of requested reviewers: `,requestedReviewers);
             console.log(`teams.size: `,reviewers.data.teams.size);
 
-            if (reviewers.data.teams.size !== 0) {
+            if (reviewers.data.teams.length !== 0) {
               core.setFailed('Fail the job');
             }
