@@ -35,9 +35,9 @@ jobs:
             const pr_number = context.payload.pull_request.number
             console.log(`list of reviewers: `,reviewers);
 
-            const query = `query($owner:String!, $name:String!) {
-              repository(owner:$owner, name:$name){
-                pullRequest(number: $pr_number) {
+            const query = `query($owner:String!, $name:String!, $pr_number: String!) {
+              repository(owner:$owner, name:$name, pr_number: $pr_number){
+                pullRequest(number: pr_number) {
                 reviews(first: 100, states: APPROVED) {
                   nodes {
                     author {
@@ -56,7 +56,7 @@ jobs:
               owner: context.repo.owner,
               name: context.repo.repo
             }
-            const result = await github.graphql(query, variables)
+            const result = await github.graphql(query, variables, pr_number)
             console.log(result)
 
             console.log(`list of requested reviewers: `,requestedReviewers);
