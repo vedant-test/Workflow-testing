@@ -21,20 +21,6 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const requestedReviewers = await github.rest.pulls.listRequestedReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number
-            });
-
-            const reviewers = await github.rest.pulls.listReviews({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number
-            });
-            const pr_number = context.payload.pull_request.number
-            console.log(`list of reviewers: `,reviewers);
-
             const query = `query($owner:String!, $name:String!, $pr_number: Int!) {
               repository(owner:$owner, name:$name){
                 pullRequest(number: $pr_number) {
@@ -45,6 +31,9 @@ jobs:
                       login
                       resourcePath
                       url
+                    }
+                    onBehalfOf {
+                    
                     }
                     
                   }
@@ -59,10 +48,3 @@ jobs:
             }
             const result = await github.graphql(query, variables)
             console.log(result)
-
-            console.log(`list of requested reviewers: `,requestedReviewers);
-            console.log(`teams.size: `,reviewers.data.teams.size);
-
-            if (reviewers.data.teams.size !== 0) {
-              core.setFailed('Fail the job');
-            }
