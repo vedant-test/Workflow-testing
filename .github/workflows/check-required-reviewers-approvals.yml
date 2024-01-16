@@ -54,9 +54,10 @@ jobs:
             }`;
             const variables = {
               owner: context.repo.owner,
-              name: context.repo.repo
+              name: context.repo.repo,
+              pr_number: context.payload.pull_request.number
             }
-            const result = await github.graphql(query, variables, pr_number)
+            const result = await github.graphql(query, variables)
             console.log(result)
 
             console.log(`list of requested reviewers: `,requestedReviewers);
