@@ -11,4 +11,4 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            core.setFailed("Fail the job")
+            console.log("successfully run the workflow")
