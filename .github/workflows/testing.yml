@@ -2,10 +2,11 @@ name: testing
 
 on:
   push:
+    types:
+      - closed
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -13,4 +14,3 @@ jobs:
         with:
           script: |
             core.setFailed("Fail the job")
-
