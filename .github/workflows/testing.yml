@@ -1,9 +1,7 @@
 name: testing
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
 
 jobs:
   if_merged:
