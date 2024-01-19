@@ -3,12 +3,10 @@ name: APK size analysis
 on:
   push:
     branches:
-      - newBranch
       - main
   pull_request:
-    types:
-      - opened
-      - synchronize
+    branches:
+      - "*"
 
 env:
   apk_size_analysis_report_file: apk_size_analyis_report.html
