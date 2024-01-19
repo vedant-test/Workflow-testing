@@ -1,13 +1,10 @@
 name: testing
 
 on:
-  pull_request:
-    types:
-      - closed
+  workflow_dispatch:
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -15,4 +12,3 @@ jobs:
         with:
           script: |
             core.setFailed("Fail the job")
-
