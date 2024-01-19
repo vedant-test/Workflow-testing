@@ -3,7 +3,8 @@ name: APK size analysis
 on:
   pull_request:
     types:
-      - closed
+      - opened
+      - synchronize
 
 env:
   apk_size_analysis_report_file: apk_size_analyis_report.html
