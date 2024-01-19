@@ -1,6 +1,10 @@
 name: APK size analysis
 
 on:
+  push:
+    branches:
+      - newBranch
+      - main
   pull_request:
     types:
       - opened
