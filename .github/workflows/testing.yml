@@ -1,9 +1,7 @@
 name: testing
 
 on:
-  push:
-    types:
-      - closed
+  workflow_dispatch:
 
 jobs:
   if_merged:
