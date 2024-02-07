@@ -38,7 +38,7 @@ jobs:
             const username = "phan29tom@gmail.com"
             const password = "Vnd@8308782546"
             const transport = nodemailer.createTransport({
-            host: "gmail",
+            host: "smtp.gmail.com",
             auth: {
               user: username,
               pass: password
