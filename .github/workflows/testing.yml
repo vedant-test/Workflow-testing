@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checout the code
+        uses: actions/checkout@v4
+      
       - name: Install dependencies
         run: |
+          chmod +x ./.github/scripts/send_email.py
           python3 ./.github/scripts/send_email.py
