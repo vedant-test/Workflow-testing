@@ -10,8 +10,36 @@ jobs:
     steps:
       - name: Checout the code
         uses: actions/checkout@v4
+
+      - name: Send email
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const nodemailer = require("nodemailer")
+            const username = "phan29tom@gmail.com"
+            const password = "Vnd@8308782546"
+            const transport = nodemailer.createTransport({
+            host: "gmail",
+            auth: {
+              user: username,
+              pass: password
+            },
+            secure: true,
+            tls: {
+              rejectUnauthorized: false
+            }
+            })
+
+            const info = await transport.sendMail({
+            from: username,
+            to: "vedantnd2911@gmail.com",
+            subject: "subject",
+            text: "hello world"
+            })
+            console.log(`info: `,info)
+          
       
-      - name: Install dependencies
-        run: |
-          chmod +x ./.github/scripts/send_email.py
-          python3 ./.github/scripts/send_email.py
+      # - name: Install dependencies
+      #   run: |
+      #     chmod +x ./.github/scripts/send_email.py
+      #     python3 ./.github/scripts/send_email.py
