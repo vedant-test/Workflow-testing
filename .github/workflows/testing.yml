@@ -4,12 +4,23 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  use_nodemailer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v4
+
   send_email:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checout the code
-        uses: actions/checkout@v4
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
 
       - name: Send email
         uses: actions/github-script@v7
