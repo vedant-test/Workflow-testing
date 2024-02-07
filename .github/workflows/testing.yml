@@ -5,6 +5,16 @@ on:
 
 jobs:
 
+  use_nodemailer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          
   send_email:
     runs-on: ubuntu-latest
 
