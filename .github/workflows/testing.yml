@@ -5,18 +5,11 @@ on:
 
 jobs:
 
-  use_nodemailer:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Setup node
-        uses: actions/setup-node@v4
-
   send_email:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checout the code
+      - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -49,8 +42,3 @@ jobs:
             })
             console.log(`info: `,info)
           
-      
-      # - name: Install dependencies
-      #   run: |
-      #     chmod +x ./.github/scripts/send_email.py
-      #     python3 ./.github/scripts/send_email.py
