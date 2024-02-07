@@ -4,16 +4,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  if_merged:
+  send_email:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get list of subscribers
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const subscribers = await github.rest.activity.listWatchersForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-            })
-            console.log(`subscribers: `, subscribers)
+      - name: Install dependencies
+        run: |
+          python3 ./.github/scripts/send_email.py
