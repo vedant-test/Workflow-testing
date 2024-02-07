@@ -27,8 +27,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Nodemailer
+        run: npm install nodemailer
 
       - name: Send email
         uses: actions/github-script@v7
